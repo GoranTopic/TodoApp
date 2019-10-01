@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, Button } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ScrollView , Button } from 'react-native';
 
 import { Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger} from "react-native-popup-menu";
 
@@ -77,13 +77,21 @@ export default class ToDoList extends React.Component {
   render() {
     return (
       <View style={styles.TodoContainer}>
+
+        <ScrollView >
+          { this.state.taskArray.map((item) => <Task task={item} />)}
+        </ScrollView>
+
+        {/*
         <FlatList
           data={this.state.taskArray}
           renderItem={this._renderItem}
           keyExtractor={(item) => "" + item.key}
         />
 
-        <Button style={styles.SummitButton}
+
+        */}
+         <Button style={styles.SummitButton}
           title="+ New +"
           onPress={() => this.props.navigation.navigate("Creator", {
             summit: this._addTask,
@@ -109,5 +117,9 @@ const styles = StyleSheet.create({
   SummitButton:{
     width: 100,
     height: 50,
+  },
+  ScrollViewContainer:{
+    flex: 1,
   }
+
 });
