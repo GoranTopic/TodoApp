@@ -12,7 +12,7 @@ export default class ToDoList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      curKey: 6,
+      curKey: 9,
       taskArray: [
         {
           title: "go shopping",
@@ -20,43 +20,91 @@ export default class ToDoList extends React.Component {
           notes: 'Go shopping and buy cakes',
           important: false,
           urgent: false,
+          createdDate: new Date(),
           dueDate: new Date(),
+          priority: 1,
+          checked: false,
         }, {
           title: "take out trash",
           key: 1,
           notes: 'stop being dirty',
           important: true,
           urgent: false,
+          createdDate: new Date(),
           dueDate: new Date(),
+          priority: 1,
+          checked: false,
         }, {
           title: "be happy",
           key: 2,
           notes: 'stop being dirty',
           important: true,
           urgent: false,
+          createdDate: new Date(),
           dueDate: new Date(),
+          priority: 1,
+          checked: false,
         }, {
           title: "call gustavo",
           key: 3,
           notes: 'ask how he is doing',
           important: false,
           urgent: false,
+          createdDate: new Date(),
           dueDate: new Date(),
+          priority: 1,
+          checked: false,
         }, {
           title: "go to cinema",
           key: 4,
           notes: 'go watch movie =)',
           important: false,
           urgent: true,
+          createdDate: new Date(),
           dueDate: new Date(),
+          priority: 1,
+          checked: false,
         }, {
-          title: "finish to do app",
+          title: "Go to Cuenca",
           key: 5,
-          notes: 'finally',
+          notes: 'Fun',
+          important: true,
+          urgent: false,
+          createdDate: new Date(),
+          dueDate: new Date(),
+          priority: 1,
+          checked: false,
+        },{
+          title: "Call girl from bonsai",
+          key: 6,
+          notes: 'do it',
           important: true,
           urgent: true,
+          createdDate: new Date(),
           dueDate: new Date(),
-        }
+          priority: 1,
+          checked: false,
+        },{
+          title: "confirm cuenca shooting",
+          key: 7,
+          notes: 'important',
+          important: true,
+          urgent: true,
+          createdDate: new Date(),
+          dueDate: new Date(),
+          priority: 1,
+          checked: false,
+        },{
+          title: "give youself a tread =)",
+          key: 8,
+          notes: 'finally',
+          important: false,
+          urgent: false,
+          createdDate: new Date(),
+          dueDate: new Date(),
+          priority: 1,
+          checked: false,
+        },
       ],
     }
 
@@ -72,32 +120,45 @@ export default class ToDoList extends React.Component {
     this.setState({taskArray: filteredArray});
   }
 
-  _renderItem = obj => <Task task={obj.item} remove={this.removeTask} navigation={this.props.navigation} />
+  _renderItem = item =>
+    //render item fuction for the scrollview
+    <View key={item.key} >
+      <Task task={item} remove={this.removeTask} navigation={this.props.navigation} />
+      <View style={styles.separator} />
+    </View>
+
+  _sortTaskArray = () => {
+    //fuction to sort the tasks by priority 
+  }
+  
+
+  _renderFlatList = obj => <Task task={obj.item} remove={this.removeTask} navigation={this.props.navigation} />
 
   render() {
     return (
       <View style={styles.TodoContainer}>
 
+      
         <ScrollView >
-          { this.state.taskArray.map((item) => <Task task={item} />)}
-        </ScrollView>
+          {this.state.taskArray.map( this._renderItem)}
 
         {/*
         <FlatList
           data={this.state.taskArray}
-          renderItem={this._renderItem}
+          renderItem={this._renderFlatList}
           keyExtractor={(item) => "" + item.key}
         />
 
-
         */}
-         <Button style={styles.SummitButton}
+
+        <Button style={styles.SummitButton}
           title="+ New +"
           onPress={() => this.props.navigation.navigate("Creator", {
             summit: this._addTask,
           })}
         />
 
+        </ScrollView>
       </View>
     );
   }
@@ -120,6 +181,10 @@ const styles = StyleSheet.create({
   },
   ScrollViewContainer:{
     flex: 1,
-  }
-
+  },
+  separator: {
+    height: 2,
+    backgroundColor: '#707080',
+    width: '100%',
+  },
 });

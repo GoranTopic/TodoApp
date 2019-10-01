@@ -15,6 +15,7 @@ export default class ToDoTask extends React.Component {
             notes: this.props.task.notes,
             important: this.props.task.important,
             urgent: this.props.task.urgent,
+            createdDate : new Date(),
             dueDate : new Date(),
             checked: false,
         }
