@@ -73,11 +73,13 @@ export default class TaskCreatorScreen extends React.Component {
             onChangeText={this._handleInputTitle}
           />
 
+          <Text>Is this important?</Text>
           <Switch onValueChange={this._toggleImportant } value={this.state.important}/>
+          <Text>Is this Urgent?</Text>
           <Switch onValueChange={this._toggleUrgent } value={this.state.urgent}/>
 
           <TextInput style={styles.TextInput}
-            placeholder="Notes"
+            placeholder="Descrition"
             onChangeText={this._handleInputNote}
           />
 

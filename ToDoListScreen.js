@@ -1,11 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, ScrollView , Button } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ScrollView , TouchableOpacity, Button } from 'react-native';
 
 import { Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger} from "react-native-popup-menu";
+
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 /* local imports */
 import Task from './Task';
 import InputBar from './InputTaskBar';
+//import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default class ToDoList extends React.Component {
   /* ToDoList component that displays the a flastList of the componets */
@@ -106,40 +109,47 @@ export default class ToDoList extends React.Component {
           checked: false,
         },
       ],
+      checkedArray: [],
     }
 
   }
-
-
-  componentDidMount(){
-    this._sortTaskArray()
-  } 
 
   _addTask = (task) => {
     newTask = { ...task, key: this.state.curKey++}
     this.setState({taskArray: [...this.state.taskArray, newTask]}, () => console.log(this.state.taskArray) );
   }
 
-  removeTask = (doomedTask) => {
-    filteredArray = this.state.taskArray.filter( (task) => { return  task.key !== doomedTask.key});
+  _addCheckedTask = (task) => {
+    newTask = { ...task, key: this.state.curKey++, checked: true}
+    this.setState({checkedArray: [newTask, ...this.state.checkedArray]}, () => console.log(this.state.checkedArray) );
+  }
+  _removeTask = (doomedTask) => {
+    if(doomedTask.checked){
+      filteredArray = this.state.checkedArray.filter( (task) => { return  task.key !== doomedTask.key});
+    }else{
+      filteredArray = this.state.taskArray.filter( (task) => { return  task.key !== doomedTask.key});
+    }
     this.setState({taskArray: filteredArray});
   }
+  _checkTask = (checkedTask) => {
+    //moves a task from the TaskArray to the CheckedTask array 
+    this._removeTask(checkedTask);
+    this._addCheckedTask(checkedTask);
+  }
 
-  _renderItem = item =>
+  _renderTask = item =>
     //render item fuction for the scrollview
     <View key={item.key} >
-      <Task task={item} remove={this.removeTask} navigation={this.props.navigation} />
+      <Task task={item} remove={this._removeTask} check={this._checkTask} navigation={this.props.navigation} />
       <View style={styles.separator} />
-    </View>
-
-  _sortTaskArray = () => {
-    //fuction to sort the tasks by priority 
-    const sortFunc = (task1, task2) => { return task2.priority - task1.priority }
-    this.setState( {taskArray: this.state.taskArray.sort(sortFunc)} );
-  }
+    </View>;
   
 
-  _renderFlatList = obj => <Task task={obj.item} remove={this.removeTask} navigation={this.props.navigation} />
+  _sortByPriority = (task1, task2) => { return task2.priority - task1.priority }
+    //fuction to sort the tasks by priority  task2.priority - task1.priority }
+  
+
+  _renderFlatList = (array) => <Task task={array.item} remove={this._removeTask} navigation={this.props.navigation} />
 
   render() {
     return (
@@ -147,24 +157,22 @@ export default class ToDoList extends React.Component {
 
       
         <ScrollView >
-
-          {this.state.taskArray.map( this._renderItem)}
-
-        {/*
-        <FlatList
+          {this.state.taskArray.sort(this._sortByPriority).map( this._renderTask)}
+        {/* <FlatList
           data={this.state.taskArray}
           renderItem={this._renderFlatList}
           keyExtractor={(item) => "" + item.key}
-        />
+        /> */}
 
-        */}
+          <View>
+            <TouchableOpacity style={styles.SummitButton}
+              onPress={() => this.props.navigation.navigate("Creator", {summit: this._addTask, })}>
+              <Icon name="plus-circle" size={33} color={"lightgray"} />
+            </TouchableOpacity>
+            <View style={styles.separator} />
+          </View>
 
-        <Button style={styles.SummitButton}
-          title="+ New +"
-          onPress={() => this.props.navigation.navigate("Creator", {
-            summit: this._addTask,
-          })}
-        />
+          {this.state.checkedArray.map(this._renderTask)}
 
         </ScrollView>
       </View>
@@ -184,8 +192,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   SummitButton:{
-    width: 100,
-    height: 50,
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "center",
+    backgroundColor: "rgb(300,300,300)",
+  },
+  SummitIcon:{
+    padding:10,
   },
   ScrollViewContainer:{
     flex: 1,
