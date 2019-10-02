@@ -21,30 +21,47 @@ export default class TaskCreatorScreen extends React.Component {
       inputNote: '',
       important: false,
       urgent: false,
-      dueDate: new Date(),
+      dueDate: null,
+      priority: 0,
       enableSummit: false,
     }
   }
   _handleInputTitle = newTitle => { this.setState({ inputTitle: newTitle }) }
   _handleInputNote = newNote => { this.setState({ inputNote: newNote }) }
     
-    _toggleImportant = (value) => { this.setState({important: value}, () => console.log(this.state.important))}
-   
-    _toggleUrgent = (value) => { this.setState({urgent: value}, ()  => console.log(this.state.urgent)) }
+    
+  _toggleImportant = (value) => { this.setState({ important: value }) }
+  _toggleUrgent = (value) => { this.setState({ urgent: value }) }
 
-    _summitTask = () => {
-      
-      summit = this.props.navigation.getParam('summit', 'NO-Summit fuction');
-      newTask = { 
+  _calcPriority= () => { 
+    /*caculaate the priority value: 
+      The priority should go as follow:
+        -> Important and urgent     -> +3 = +2 +1
+        -> Important but not urgent -> if(important) +2
+        -> Urgent but not important -> if(urgent) +1
+        -> Not importnant and not   -> +0
+     */
+    var totalPriority = 0;
+    if(this.state.urgent) totalPriority += 1;
+    if(this.state.important) totalPriority += 2;
+    return totalPriority;
+  }
+  _summitTask = () => {
+     
+    summit = this.props.navigation.getParam('summit', 'NO-Summit fuction');
+    newTask = { 
         title: this.state.inputTitle, 
         notes: this.state.inputNote,
         important: this.state.important,
         urgent: this.state.urgent,
         dueDate: this.state.dueDate,
+        createDate: new Date(),
+        priority: this._calcPriority(),
+
        }
-      summit(newTask);
-      this.props.navigation.navigate('Home'); 
-    }
+    summit(newTask);
+    this.props.navigation.navigate('Home'); 
+  }
 
 
   render() {

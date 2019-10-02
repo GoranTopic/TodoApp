@@ -22,7 +22,7 @@ export default class ToDoList extends React.Component {
           urgent: false,
           createdDate: new Date(),
           dueDate: new Date(),
-          priority: 1,
+          priority: 0,
           checked: false,
         }, {
           title: "take out trash",
@@ -32,17 +32,17 @@ export default class ToDoList extends React.Component {
           urgent: false,
           createdDate: new Date(),
           dueDate: new Date(),
-          priority: 1,
+          priority: 2,
           checked: false,
         }, {
           title: "be happy",
           key: 2,
-          notes: 'stop being dirty',
+          notes: 'stop being fake',
           important: true,
           urgent: false,
           createdDate: new Date(),
           dueDate: new Date(),
-          priority: 1,
+          priority: 2,
           checked: false,
         }, {
           title: "call gustavo",
@@ -52,7 +52,7 @@ export default class ToDoList extends React.Component {
           urgent: false,
           createdDate: new Date(),
           dueDate: new Date(),
-          priority: 1,
+          priority: 0,
           checked: false,
         }, {
           title: "go to cinema",
@@ -72,7 +72,7 @@ export default class ToDoList extends React.Component {
           urgent: false,
           createdDate: new Date(),
           dueDate: new Date(),
-          priority: 1,
+          priority: 2,
           checked: false,
         },{
           title: "Call girl from bonsai",
@@ -82,7 +82,7 @@ export default class ToDoList extends React.Component {
           urgent: true,
           createdDate: new Date(),
           dueDate: new Date(),
-          priority: 1,
+          priority: 3,
           checked: false,
         },{
           title: "confirm cuenca shooting",
@@ -92,7 +92,7 @@ export default class ToDoList extends React.Component {
           urgent: true,
           createdDate: new Date(),
           dueDate: new Date(),
-          priority: 1,
+          priority: 3,
           checked: false,
         },{
           title: "give youself a tread =)",
@@ -102,13 +102,18 @@ export default class ToDoList extends React.Component {
           urgent: false,
           createdDate: new Date(),
           dueDate: new Date(),
-          priority: 1,
+          priority: 0,
           checked: false,
         },
       ],
     }
 
   }
+
+
+  componentDidMount(){
+    this._sortTaskArray()
+  } 
 
   _addTask = (task) => {
     newTask = { ...task, key: this.state.curKey++}
@@ -129,6 +134,8 @@ export default class ToDoList extends React.Component {
 
   _sortTaskArray = () => {
     //fuction to sort the tasks by priority 
+    const sortFunc = (task1, task2) => { return task2.priority - task1.priority }
+    this.setState( {taskArray: this.state.taskArray.sort(sortFunc)} );
   }
   
 
@@ -140,6 +147,7 @@ export default class ToDoList extends React.Component {
 
       
         <ScrollView >
+
           {this.state.taskArray.map( this._renderItem)}
 
         {/*
