@@ -114,16 +114,34 @@ export default class ToDoList extends React.Component {
 
   }
 
-  _addTask = (task) => {
-    newTask = { ...task, key: this.state.curKey++}
-    this.setState({taskArray: [...this.state.taskArray, newTask]}, () => console.log(this.state.taskArray) );
+
+  _switchTask = (task) => {
+    /*fuction which take as a task and move it to check array if it is unmarked
+      and taskArray if it is checked changes it marked state afterwards*/
+      if(task.checked){ //if task is checked
+        //remove array from task checked Array
+        filteredArray = this.state.checkedArray.filter( (otherTask) => {return  task.key !== otherTask.key} );
+        this.setState({checkedArray: filteredArray});
+        //add array to the unchecked array list  
+        task = { ...task, checked: false} //set as uncheked
+        this.setState({taskArray: [...this.state.taskArray, task]});
+      }else{   //if task is unchecked 
+        filteredArray = this.state.taskArray.filter( (otherTask) => {return  task.key !== otherTask.key} );
+        this.setState({taskArray: filteredArray});
+        //add array to the checked array list  
+        task = { ...task, checked: true} //set as uncheked
+        this.setState({checkedArray: [...this.state.checkedArray, task]});
+      }
   }
 
-  _addCheckedTask = (task) => {
-    newTask = { ...task, key: this.state.curKey++, checked: true}
-    this.setState({checkedArray: [newTask, ...this.state.checkedArray]}, () => console.log(this.state.checkedArray) );
+  _addTask = (task) => {
+    /* crates a new to the unchekd taskArray */
+    newTask = { ...task, key: this.state.curKey++}
+    this.setState({taskArray: [...this.state.taskArray, newTask]}, print("new Task created"));
   }
+  
   _removeTask = (doomedTask) => {
+    /* removes a task from the cheked or unchecked array whether it is marked as checked or unchecked */
     if(doomedTask.checked){
       filteredArray = this.state.checkedArray.filter( (task) => { return  task.key !== doomedTask.key});
     }else{
@@ -131,25 +149,20 @@ export default class ToDoList extends React.Component {
     }
     this.setState({taskArray: filteredArray});
   }
-  _checkTask = (checkedTask) => {
-    //moves a task from the TaskArray to the CheckedTask array 
-    this._removeTask(checkedTask);
-    this._addCheckedTask(checkedTask);
-  }
-
-  _renderTask = item =>
-    //render item fuction for the scrollview
+  
+   _renderTask = item =>
+    /* render item fuction for the scrollview */
     <View key={item.key} >
-      <Task task={item} remove={this._removeTask} check={this._checkTask} navigation={this.props.navigation} />
+      <Task task={item} switch={this._switchTask} remove={this._removeTask} check={this._checkTask} navigation={this.props.navigation} />
       <View style={styles.separator} />
     </View>;
   
 
   _sortByPriority = (task1, task2) => { return task2.priority - task1.priority }
-    //fuction to sort the tasks by priority  task2.priority - task1.priority }
+    /*fuction to sort the tasks by priority  task2.priority - task1.priority } */
   
-
   _renderFlatList = (array) => <Task task={array.item} remove={this._removeTask} navigation={this.props.navigation} />
+    /*redener passes parameters to the task array*/
 
   render() {
     return (

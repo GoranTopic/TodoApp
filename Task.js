@@ -9,15 +9,15 @@ export default class ToDoTask extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = { ...this.props.task, }
+        this.state = { ...this.props.task}
     }
     
-    _checkSelf = this.props.check;
     _removeSelf = this.props.remove;
+    _switchTask = this.props.switch;
 
     _toggleChecked = (value) => {
-        this.setState({ checked: value });
-        this._checkSelf(this.props.task)
+        this.setState({ checked: value }); //set value inside the render
+        this._switchTask(this.props.task) //swith to the cheked or unchekd array
     }
 
     render() {
@@ -26,12 +26,12 @@ export default class ToDoTask extends React.Component {
                 <MenuTrigger style={!this.state.checked ? styles.Task : styles.CheckedTask} triggerOnLongPress={true}>
                     <CheckBox value={this.state.checked} onValueChange={this._toggleChecked} />
                     <View style={styles.TextContainer}>
-                        <Text> {this.state.title}  </Text>
+                        <Text style={!this.state.checked ? {} : styles.checkedText}> {this.state.title}  </Text>
                         {!this.state.important ? <View /> :
-                            <Icon style={styles.Icon} name="exclamation-triangle" color="yellow" backgroundColor="yellow" />
+                            <Icon style={styles.checkedIcon} name="exclamation-triangle" color="yellow" backgroundColor="yellow" />
                         }
                         {!this.state.urgent ? <View /> :
-                            <Icon style={styles.Icon} name="hourglass-start" color="red" backgroundColor="red" />
+                            <Icon style={styles.checkedIcon} name="hourglass-start" color="red" backgroundColor="red" />
                         }
                     </View>
                 </MenuTrigger>
@@ -64,16 +64,18 @@ const styles = StyleSheet.create({
         padding: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'lightgray',
+        backgroundColor: 'rgba(100,100,100, .2)',
     },
     TextContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-
     },
-    Icon:{
-        padding: 10,
+    checkedText:{
+        color: 'rgba(0,0,0, .2)',
+    },
+    checkedIcon:{
+        color: 'rgba(0,0,0, .2)',
     }
 
 
